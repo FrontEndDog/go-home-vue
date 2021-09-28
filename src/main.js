@@ -9,6 +9,7 @@ import ElementUI from 'element-ui'
 import 'normalize.css'
 Vue.use(ElementUI)
 
+import '@/styles/index.scss'
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
