@@ -2,19 +2,33 @@
   <div id="app">
     <div class="week-info">今天是星期{{ week }}，{{ chickenSoup }}</div>
 
-    <div v-if="WorkStatus === 0" class="off-work">距离上班还有{{ onWork.hours }}小时{{ onWork.minutes }}分钟{{ onWork.seconds }}秒</div>
-    <div v-if="WorkStatus === 1" class="off-work">距离下班还有{{ offWork.hours }}小时{{ offWork.minutes }}分钟{{ offWork.seconds }}秒</div>
-    <div v-if="WorkStatus === 2" class="off-work">下班啦！快准备一下回家吧！</div>
+    <div class="border-wrap">
+      <div v-if="WorkStatus === 0" class="row">
+        距离上班还有<span> {{ onWork.hours }} </span>小时<span> {{ onWork.minutes }} </span>分钟<span> {{ onWork.seconds }} </span>秒
+      </div>
+      <div v-if="WorkStatus === 1" class="row">
+        距离下班还有<span> {{ offWork.hours }} </span>小时<span> {{ offWork.minutes }} </span>分钟<span> {{ offWork.seconds }} </span>秒
+      </div>
+      <div v-if="WorkStatus === 2" class="row">
+        <span>下班啦！快准备一下回家吧！</span>
+      </div>
 
-    <div v-if="Object.keys(weekend).length" class="weekend">距离周末还有{{ weekend.days }}天{{ weekend.hours }}小时{{ weekend.minutes }}分钟{{ weekend.seconds }}秒</div>
+      <div v-if="Object.keys(weekend).length" class="row">
+        距离周末还有<span> {{ weekend.days }} </span>天<span> {{ weekend.hours }} </span>小时<span> {{ weekend.minutes }} </span>分钟<span> {{ weekend.seconds }} </span>秒
+      </div>
 
-    <div v-for="item in holidayList" :key="item.restDay[0]" class="weekend">距离{{ item.name }}假期还有{{ item.countDown.days }}天{{ item.countDown.hours }}小时{{ item.countDown.minutes }}分钟{{ item.countDown.seconds }}秒</div>
+      <div v-for="item in holidayList" :key="item.restDay[0]" class="row">
+        距离{{ item.name }}假期还有<span> {{ item.countDown.days }} </span>天<span> {{ item.countDown.hours }} </span>小时<span> {{ item.countDown.minutes }} </span>分钟<span> {{ item.countDown.seconds }} </span>秒
+      </div>
 
-    <div class="pay-off">距离发工资还有{{ payOff }}天</div>
+      <div class="row">
+        距离发工资还有<span> {{ payOff }} </span>天
+      </div>
 
-    <div class="flex date-time">
-      <div>当前时间：{{ dateTime }}</div>
-      <el-button size="mini" type="primary" @click="setClick">{{ setStatus ? '保存' : '设置' }}</el-button>
+      <div class="flex row">
+        <div>当前时间：{{ dateTime }}</div>
+        <el-button size="mini" type="primary" @click="setClick">{{ setStatus ? '保存' : '设置' }}</el-button>
+      </div>
     </div>
     <!-- 设置面板 -->
     <SettingsPanel v-show="setStatus" ref="SettingsPanel" @updateConfig="setConfig"></SettingsPanel>
@@ -210,34 +224,34 @@ export default {
 <style lang="scss" scoped>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  color: #303133;
   width: 500px;
   padding: 20px;
   .week-info {
     font-size: 16px;
-    border-left: 5px solid #eee;
+    border-left: 5px solid #c0c4cc;
     padding: 5px 0 5px 20px;
     line-height: 22px;
     margin-bottom: 10px;
   }
-  .off-work {
-    padding: 10px;
-    font-size: 14px;
-  }
-  .weekend {
-    padding: 10px;
-    font-size: 14px;
-  }
-  .pay-off {
-    padding: 10px;
-    font-size: 14px;
-  }
-  .date-time {
-    line-height: 28px;
-    font-size: 14px;
-    padding-left: 10px;
+  .border-wrap {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 20px;
+    .row {
+      font-size: 14px;
+      line-height: 20px;
+      padding: 10px 15px;
+      border-bottom: 1px solid #ddd;
+      span {
+        color: #f56c6c;
+        font-weight: bold;
+        font-size: 15px;
+      }
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
 }
 </style>
