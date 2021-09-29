@@ -1,21 +1,32 @@
-# vue-template
+# 摸鱼人倒计时
 
-> A Vue.js project
+> 一个谷歌浏览器倒计时插件
 
-## Build Setup
+## 安装步骤
 
 ```bash
-# install dependencies
+# 安装依赖
 npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
+# 打包
 npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+打开谷歌浏览器
+输入链接[chrome://extensions/](chrome://extensions/)
+将打包生成的 dist 文件夹拖进去
+
+## 插件默认值
+
+1. 考勤时间默认为 9:00-18:00
+2. 发薪日默认为每月 10 号
+3. 工作制默认为双休，暂不可修改
+
+## 开发进度
+
+1. [√] 下班时间，周末，发薪日，法定节假日倒计时
+1. [√] 支持考勤时间配置
+1. [√] 支持发薪日配置
+1. [√] 支持法定节假日配置
+1. [x] 支持双休，大小周，单休工作制配置
+1. [x] 下班时，桌面弹窗提醒
