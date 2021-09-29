@@ -3,15 +3,18 @@
     <div class="week-info">今天是星期{{ week }}，{{ chickenSoup }}</div>
 
     <div class="border-wrap">
-      <div v-if="WorkStatus === 0" class="row">
-        距离上班还有<span> {{ onWork.hours }} </span>小时<span> {{ onWork.minutes }} </span>分钟<span> {{ onWork.seconds }} </span>秒
-      </div>
-      <div v-if="WorkStatus === 1" class="row">
-        距离下班还有<span> {{ offWork.hours }} </span>小时<span> {{ offWork.minutes }} </span>分钟<span> {{ offWork.seconds }} </span>秒
-      </div>
-      <div v-if="WorkStatus === 2" class="row">
-        <span>下班啦！快准备一下回家吧！</span>
-      </div>
+      <template v-if="isWorkDay">
+        <div v-if="WorkStatus === 0" class="row">
+          距离上班还有<span> {{ onWork.hours }} </span>小时<span> {{ onWork.minutes }} </span>分钟<span> {{ onWork.seconds }} </span>秒
+        </div>
+        <div v-if="WorkStatus === 1" class="row">
+          距离下班还有<span> {{ offWork.hours }} </span>小时<span> {{ offWork.minutes }} </span>分钟<span> {{ offWork.seconds }} </span>秒
+        </div>
+        <div v-if="WorkStatus === 2" class="row">
+          <span>下班啦！快准备一下回家吧！</span>
+        </div>
+      </template>
+      <div v-else class="row">今天不用上班，好好享受假期吧！</div>
 
       <div v-if="Object.keys(weekend).length" class="row">
         距离周末还有<span> {{ weekend.days }} </span>天<span> {{ weekend.hours }} </span>小时<span> {{ weekend.minutes }} </span>分钟<span> {{ weekend.seconds }} </span>秒
@@ -64,7 +67,7 @@ export default {
       dateTime: '', //当前时间
 
       WorkStatus: null, //工作状态：0未开始上班，1正在上班，2已经下班
-      isWorkDay: true, //是否工作日
+      isWorkDay: true, //今天是否需要上班
 
       setStatus: false, //设置面板是否展开
 
@@ -93,9 +96,10 @@ export default {
       this.config.workType = config.workType || 0
       this.config.payOffDay = config.payOffDay || 10
     },
-    //每秒更新一次时间
+    //每秒更新一次
     update() {
       this.setWorkStatus()
+      this.setIsWorkDay()
       this.setHoliday()
       this.setWeekend()
       this.setPayOff()
@@ -116,8 +120,25 @@ export default {
         this.WorkStatus = 1 //工作中
         this.setOffWork() //设置下班倒计时
       }
-      this.dateTime = now.format('YYYY-MM-DD HH:mm:ss')
-      this.week = weekEnum[now.format('d')]
+      this.dateTime = now.format('YYYY-MM-DD HH:mm:ss') //当前时间
+      this.week = weekEnum[now.format('d')] //当天周几
+    },
+
+    //设置今天是否需要上班
+    setIsWorkDay() {
+      const now = new moment('2021-10-01')
+      const date = now.format('YYYY-MM-DD') //当前日期
+      const inWorkDay = holiday.some(item => item.workDay.some(item => item === date))
+      const inRestDay = holiday.some(item => item.restDay.some(item => item === date))
+      if (inWorkDay) {
+        this.isWorkDay = true
+        return
+      }
+      if (inRestDay) {
+        this.isWorkDay = false
+        return
+      }
+      this.isWorkDay = now.format('d') > 0 && now.format('d') < 6
     },
     //上班倒计时
     setOnWork() {
@@ -228,7 +249,6 @@ export default {
   width: 500px;
   padding: 20px;
   .week-info {
-    font-weight: bold;
     font-size: 16px;
     border-left: 5px solid #50bfff;
     padding: 8px 0 8px 20px;
