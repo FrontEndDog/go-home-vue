@@ -126,7 +126,7 @@ export default {
 
     //设置今天是否需要上班
     setIsWorkDay() {
-      const now = new moment('2021-10-01')
+      const now = new moment()
       const date = now.format('YYYY-MM-DD') //当前日期
       const inWorkDay = holiday.some(item => item.workDay.some(item => item === date))
       const inRestDay = holiday.some(item => item.restDay.some(item => item === date))
