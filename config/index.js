@@ -44,7 +44,6 @@ module.exports = {
 
   build: {
     development: require('./dev.env.js'),
-    test: require('./test.env.js'),
     production: require('./prod.env.js'),
 
     // Template for index.html

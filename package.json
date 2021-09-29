@@ -8,8 +8,7 @@
     "dev": "cross-env NODE_ENV=development webpack-dev-server --host 0.0.0.0 --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
-    "build:test": "cross-env NODE_ENV=test node build/build.js",
-    "build:prod": "cross-env NODE_ENV=production node build/build.js"
+    "build": "cross-env NODE_ENV=production node build/build.js"
   },
   "dependencies": {
     "axios": "^0.21.1",
