@@ -223,16 +223,19 @@ export default {
 </script>
 <style lang="scss" scoped>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'Microsoft YaHei', 'Avenir', Helvetica, Arial, sans-serif;
   color: #303133;
   width: 500px;
   padding: 20px;
   .week-info {
+    font-weight: bold;
     font-size: 16px;
-    border-left: 5px solid #c0c4cc;
-    padding: 5px 0 5px 20px;
-    line-height: 22px;
+    border-left: 5px solid #50bfff;
+    padding: 8px 0 8px 20px;
+    line-height: 24px;
     margin-bottom: 10px;
+    background: #ecf8ff;
+    color: #606266;
   }
   .border-wrap {
     border: 1px solid #ddd;
