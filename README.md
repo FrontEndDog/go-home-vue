@@ -12,8 +12,8 @@ npm install
 npm run build
 ```
 
-打开谷歌浏览器
-输入链接[chrome://extensions/](chrome://extensions/)
+在谷歌浏览器中打开链接 chrome://extensions/
+
 将打包生成的 dist 文件夹拖进去
 
 ## 插件默认值
