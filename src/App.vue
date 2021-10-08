@@ -198,7 +198,7 @@ export default {
       weekend.date(weekend.date() + week)
 
       //判断周六当天是否在调休或者节假日中
-      const isInHoliday = this.holidayList.some(item => {
+      const isInHoliday = holiday.some(item => {
         const date = weekend.format('YYYY-MM-DD')
         return item.workDay.includes(date) || item.restDay.includes(date)
       })
