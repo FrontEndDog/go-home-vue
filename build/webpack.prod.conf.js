@@ -111,6 +111,10 @@ const webpackConfig = merge(baseWebpackConfig, {
       {
         from: path.resolve(__dirname, '../manifest.json'),
         to: ''
+      },
+      {
+        from: path.resolve(__dirname, '../images'),
+        to: 'images'
       }
     ])
   ]
