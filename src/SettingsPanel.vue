@@ -10,6 +10,10 @@
         </el-form-item>
       </div>
 
+      <!-- <el-form-item label="点餐提醒：" prop="orderWarnTime">
+        <el-time-select v-model="form.model.offWorkTime" :picker-options="{ start: '00:00', step: '00:30', end: '23:59', minTime: form.model.onWorkTime }" placeholder="下班时间"> </el-time-select>
+      </el-form-item> -->
+
       <el-form-item label="发薪日：" prop="payOffDay">
         <div class="flex-start">
           每月
@@ -32,6 +36,7 @@
 </template>
 
 <script>
+/* - global chrome */
 export default {
   data() {
     return {
@@ -55,6 +60,24 @@ export default {
     }
   },
   created() {
+    // if (chrome.notifications !== undefined) {
+    //   chrome.notifications.create('', {
+    //     iconUrl: 'images/icon48.png',
+    //     type: 'list',
+    //     title: '下班啦！！',
+    //     message: '来自摸鱼人倒计时的提醒',
+    //     items: [{ title: '1', message: '1' }],
+    //     buttons: [
+    //       {
+    //         title: '查看事项'
+    //       },
+    //       {
+    //         title: '标记已读'
+    //       }
+    //     ]
+    //   })
+    // }
+
     const config = JSON.parse(localStorage.getItem('goHomeConfig') || '{}')
     this.form.model.onWorkTime = config.onWorkTime || '09:00'
     this.form.model.offWorkTime = config.offWorkTime || '18:00'

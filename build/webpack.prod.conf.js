@@ -107,14 +107,6 @@ const webpackConfig = merge(baseWebpackConfig, {
         from: path.resolve(__dirname, '../static'),
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
-      },
-      {
-        from: path.resolve(__dirname, '../manifest.json'),
-        to: ''
-      },
-      {
-        from: path.resolve(__dirname, '../images'),
-        to: 'images'
       }
     ])
   ]

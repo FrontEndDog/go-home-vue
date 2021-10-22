@@ -1,40 +1,42 @@
 <template>
   <div id="app">
-    <div class="week-info">今天是星期{{ week }}，{{ chickenSoup }}</div>
+    <el-scrollbar wrap-style="overflow-x: hidden;margin-bottom:0">
+      <div class="week-info">今天是星期{{ week }}，{{ chickenSoup }}</div>
 
-    <div class="border-wrap">
-      <template v-if="isWorkDay">
-        <div v-if="WorkStatus === 0" class="row">
-          距离上班还有<span> {{ onWork.hours }} </span>小时<span> {{ onWork.minutes }} </span>分钟<span> {{ onWork.seconds }} </span>秒
+      <div class="border-wrap">
+        <template v-if="isWorkDay">
+          <div v-if="WorkStatus === 0" class="row">
+            距离上班还有<span> {{ onWork.hours }} </span>小时<span> {{ onWork.minutes }} </span>分钟<span> {{ onWork.seconds }} </span>秒
+          </div>
+          <div v-if="WorkStatus === 1" class="row">
+            距离下班还有<span> {{ offWork.hours }} </span>小时<span> {{ offWork.minutes }} </span>分钟<span> {{ offWork.seconds }} </span>秒
+          </div>
+          <div v-if="WorkStatus === 2" class="row">
+            <span>下班啦！快准备一下回家吧！</span>
+          </div>
+        </template>
+        <div v-else class="row">今天不用上班，好好享受假期吧！</div>
+
+        <div v-if="Object.keys(weekend).length" class="row">
+          距离周末还有<span> {{ weekend.days }} </span>天<span> {{ weekend.hours }} </span>小时<span> {{ weekend.minutes }} </span>分钟<span> {{ weekend.seconds }} </span>秒
         </div>
-        <div v-if="WorkStatus === 1" class="row">
-          距离下班还有<span> {{ offWork.hours }} </span>小时<span> {{ offWork.minutes }} </span>分钟<span> {{ offWork.seconds }} </span>秒
+
+        <div v-for="item in holidayList" :key="item.restDay[0]" class="row">
+          距离{{ item.name }}假期还有<span> {{ item.countDown.days }} </span>天<span> {{ item.countDown.hours }} </span>小时<span> {{ item.countDown.minutes }} </span>分钟<span> {{ item.countDown.seconds }} </span>秒
         </div>
-        <div v-if="WorkStatus === 2" class="row">
-          <span>下班啦！快准备一下回家吧！</span>
+
+        <div class="row">
+          距离发工资还有<span> {{ payOff }} </span>天
         </div>
-      </template>
-      <div v-else class="row">今天不用上班，好好享受假期吧！</div>
 
-      <div v-if="Object.keys(weekend).length" class="row">
-        距离周末还有<span> {{ weekend.days }} </span>天<span> {{ weekend.hours }} </span>小时<span> {{ weekend.minutes }} </span>分钟<span> {{ weekend.seconds }} </span>秒
+        <div class="flex row">
+          <div>当前时间：{{ dateTime }}</div>
+          <el-button size="mini" type="primary" @click="setClick">{{ setStatus ? '保存' : '设置' }}</el-button>
+        </div>
       </div>
-
-      <div v-for="item in holidayList" :key="item.restDay[0]" class="row">
-        距离{{ item.name }}假期还有<span> {{ item.countDown.days }} </span>天<span> {{ item.countDown.hours }} </span>小时<span> {{ item.countDown.minutes }} </span>分钟<span> {{ item.countDown.seconds }} </span>秒
-      </div>
-
-      <div class="row">
-        距离发工资还有<span> {{ payOff }} </span>天
-      </div>
-
-      <div class="flex row">
-        <div>当前时间：{{ dateTime }}</div>
-        <el-button size="mini" type="primary" @click="setClick">{{ setStatus ? '保存' : '设置' }}</el-button>
-      </div>
-    </div>
-    <!-- 设置面板 -->
-    <SettingsPanel v-show="setStatus" ref="SettingsPanel" @updateConfig="setConfig"></SettingsPanel>
+      <!-- 设置面板 -->
+      <SettingsPanel v-show="setStatus" ref="SettingsPanel" @updateConfig="setConfig"></SettingsPanel>
+    </el-scrollbar>
   </div>
 </template>
 
@@ -247,7 +249,14 @@ export default {
   font-family: 'Microsoft YaHei', 'Avenir', Helvetica, Arial, sans-serif;
   color: #303133;
   width: 500px;
-  padding: 20px;
+  // height: 600px;
+  overflow: hidden;
+  .el-scrollbar {
+    height: 100%;
+    /deep/ .el-scrollbar__view {
+      padding: 20px;
+    }
+  }
   .week-info {
     font-size: 16px;
     border-left: 5px solid #50bfff;
