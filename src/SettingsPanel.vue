@@ -10,9 +10,9 @@
         </el-form-item>
       </div>
 
-      <!-- <el-form-item label="点餐提醒：" prop="orderWarnTime">
-        <el-time-select v-model="form.model.offWorkTime" :picker-options="{ start: '00:00', step: '00:30', end: '23:59', minTime: form.model.onWorkTime }" placeholder="下班时间"> </el-time-select>
-      </el-form-item> -->
+      <el-form-item label="点餐提醒：" prop="orderWarnTime">
+        <el-time-select v-model="form.model.orderWarnTime" :picker-options="{ start: '00:00', step: '00:05', end: '23:59' }" placeholder="提醒时间"> </el-time-select>
+      </el-form-item>
 
       <el-form-item label="发薪日：" prop="payOffDay">
         <div class="flex-start">
@@ -47,6 +47,7 @@ export default {
         model: {
           onWorkTime: '', //上班时间
           offWorkTime: '', //下班时间
+          orderWarnTime: '', //提醒点餐时间
           workType: null, //工作制，0双休 1大小周 2单休
           payOffDay: null //发薪日
         },
@@ -81,6 +82,7 @@ export default {
     const config = JSON.parse(localStorage.getItem('goHomeConfig') || '{}')
     this.form.model.onWorkTime = config.onWorkTime || '09:00'
     this.form.model.offWorkTime = config.offWorkTime || '18:00'
+    this.form.model.orderWarnTime = config.orderWarnTime || '10:45'
     this.form.model.workType = config.workType || 0
     this.form.model.payOffDay = config.payOffDay || 10
   },

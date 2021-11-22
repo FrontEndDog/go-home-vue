@@ -95,6 +95,7 @@ export default {
       const config = JSON.parse(localStorage.getItem('goHomeConfig') || '{}')
       this.config.onWorkTime = config.onWorkTime || '09:00'
       this.config.offWorkTime = config.offWorkTime || '18:00'
+      this.config.orderWarnTime = config.orderWarnTime || '10:45'
       this.config.workType = config.workType || 0
       this.config.payOffDay = config.payOffDay || 10
     },
