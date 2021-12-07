@@ -25,7 +25,10 @@ const webpackConfig = merge(baseWebpackConfig, {
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   output: {
     path: config.build.assetsRoot,
-    filename: utils.assetsPath('js/[name].[chunkhash].js'),
+    filename: chunkData => {
+      const path = chunkData.chunk.name === 'background' ? 'js/[name].js' : 'js/[name].[chunkhash].js'
+      return utils.assetsPath(path)
+    },
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
   },
   plugins: [
@@ -83,13 +86,15 @@ const webpackConfig = merge(baseWebpackConfig, {
       minChunks(module) {
         // any required modules inside node_modules are extracted to vendor
         return module.resource && /\.js$/.test(module.resource) && module.resource.indexOf(path.join(__dirname, '../node_modules')) === 0
-      }
+      },
+      chunks: ['app']
     }),
     // extract webpack runtime and module manifest to its own file in order to
     // prevent vendor hash from being updated whenever app bundle is updated
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest',
-      minChunks: Infinity
+      minChunks: Infinity,
+      chunks: ['app', 'vendor']
     }),
     // This instance extracts shared chunks from code splitted chunks and bundles them
     // in a separate chunk, similar to the vendor chunk
