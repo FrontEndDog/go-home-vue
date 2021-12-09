@@ -10,9 +10,9 @@
         </el-form-item>
       </div>
 
-      <!-- <el-form-item label="点餐提醒：" prop="orderWarnTime">
+      <el-form-item label="点餐提醒：" prop="orderWarnTime">
         <el-time-select v-model="form.model.orderWarnTime" :picker-options="{ start: '00:00', step: '00:05', end: '23:59' }" placeholder="提醒时间"> </el-time-select>
-      </el-form-item> -->
+      </el-form-item>
 
       <el-form-item label="发薪日：" prop="payOffDay">
         <div class="flex-start">
@@ -36,6 +36,8 @@
 </template>
 
 <script>
+import { getConfig } from '@/utils'
+/*  global chrome */
 export default {
   data() {
     return {
@@ -60,18 +62,16 @@ export default {
     }
   },
   created() {
-    const config = JSON.parse(localStorage.getItem('goHomeConfig') || '{}')
-    this.form.model.onWorkTime = config.onWorkTime || '09:00'
-    this.form.model.offWorkTime = config.offWorkTime || '18:00'
-    this.form.model.orderWarnTime = config.orderWarnTime || '10:45'
-    this.form.model.workType = config.workType || 0
-    this.form.model.payOffDay = config.payOffDay || 10
+    this.form.model = getConfig()
   },
   methods: {
     async save() {
       await this.$refs.form.validate()
       localStorage.setItem('goHomeConfig', JSON.stringify(this.form.model))
       this.$emit('updateConfig')
+      if (chrome && chrome.runtime) {
+        chrome.runtime.sendMessage('configChange')
+      }
     }
   }
 }

@@ -43,7 +43,7 @@
 <script>
 import { getChickenSoup } from './chickenSoup'
 import { weekEnum } from './enum'
-import { getHourAndMinute } from './utils'
+import { getHourAndMinute, getConfig, getIsWorkDay } from './utils'
 import holiday from './holiday'
 import moment from 'moment'
 
@@ -92,12 +92,7 @@ export default {
   methods: {
     //读取用户自定义设置
     setConfig() {
-      const config = JSON.parse(localStorage.getItem('goHomeConfig') || '{}')
-      this.config.onWorkTime = config.onWorkTime || '09:00'
-      this.config.offWorkTime = config.offWorkTime || '18:00'
-      this.config.orderWarnTime = config.orderWarnTime || '10:45'
-      this.config.workType = config.workType || 0
-      this.config.payOffDay = config.payOffDay || 10
+      this.config = getConfig()
     },
     //每秒更新一次
     update() {
@@ -129,57 +124,38 @@ export default {
 
     //设置今天是否需要上班
     setIsWorkDay() {
-      const now = new moment()
-      const date = now.format('YYYY-MM-DD') //当前日期
-      const inWorkDay = holiday.some(item => item.workDay.some(item => item === date))
-      const inRestDay = holiday.some(item => item.restDay.some(item => item === date))
-      if (inWorkDay) {
-        this.isWorkDay = true
-        return
-      }
-      if (inRestDay) {
-        this.isWorkDay = false
-        return
-      }
-      this.isWorkDay = now.format('d') > 0 && now.format('d') < 6
+      this.isWorkDay = getIsWorkDay()
     },
+
     //上班倒计时
     setOnWork() {
       const now = new moment()
-      const [onWorkHours, onWorkMinute] = getHourAndMinute(this.config.onWorkTime)
-      const onWorkTime = new moment()
-      onWorkTime.hours(onWorkHours)
-      onWorkTime.minute(onWorkMinute)
-      onWorkTime.second(0)
-      onWorkTime.millisecond(0)
+      const [hour, minute] = getHourAndMinute(this.config.onWorkTime)
+      const onWorkTime = new moment({ hour, minute })
       this.onWork = moment.duration(onWorkTime.diff(now))._data
     },
+
     //下班倒计时
     setOffWork() {
       const now = new moment()
-      const [offWorkHours, offWorkMinute] = getHourAndMinute(this.config.offWorkTime)
-      const offWorkTime = new moment()
-      offWorkTime.hours(offWorkHours)
-      offWorkTime.minute(offWorkMinute)
-      offWorkTime.second(0)
-      offWorkTime.millisecond(0)
+      const [hour, minute] = getHourAndMinute(this.config.offWorkTime)
+      const offWorkTime = new moment({ hour, minute })
       this.offWork = moment.duration(offWorkTime.diff(now))._data
     },
 
     //设置距离节假日天数
     setHoliday() {
-      const [offWorkHours, offWorkMinute] = getHourAndMinute(this.config.offWorkTime)
+      const [hour, minute] = getHourAndMinute(this.config.offWorkTime)
       this.holidayList = holiday
         .map(item => {
           const now = new moment()
-          const firstDay = new moment(item.restDay[0])
-          const yesterday = firstDay.date(firstDay.date() - 1)
-          yesterday.hours(offWorkHours)
-          yesterday.minute(offWorkMinute)
-          yesterday.second(0)
-          yesterday.millisecond(0)
-          item.countDown = moment.duration(yesterday.diff(now))._data
-          item.countDown.days = yesterday.diff(now, 'days')
+          //节假日开始的日期
+          const holidayBeginDay = new moment(item.restDay[0]).subtract(1, 'd')
+          //节假日开始的时间
+          const holidayBeginTime = new moment(Object.assign(holidayBeginDay.toObject(), { hour, minute }))
+
+          item.countDown = moment.duration(holidayBeginTime.diff(now))._data
+          item.countDown.days = holidayBeginTime.diff(now, 'days')
           item.countDown.months = 0
           item.countDown.years = 0
           return item
@@ -191,14 +167,17 @@ export default {
     //设置距离周末天数
     setWeekend() {
       const now = new moment()
-      const weekend = new moment()
+      const [hour, minute] = getHourAndMinute(this.config.offWorkTime)
+      const weekend = new moment({ hour, minute })
+
       //week是距离下一个周六的天数
       let week = weekend.day()
       if (week != 6) {
         week = 6 - week
       }
+
       //设置日期为下一个周六
-      weekend.date(weekend.date() + week)
+      weekend.add(week, 'd')
 
       //判断周六当天是否在调休或者节假日中
       const isInHoliday = holiday.some(item => {
@@ -210,12 +189,7 @@ export default {
       if (isInHoliday) {
         this.weekend = {}
       } else {
-        const [offWorkHours, offWorkMinute] = getHourAndMinute(this.config.offWorkTime)
-        weekend.date(weekend.date() - 1)
-        weekend.hours(offWorkHours)
-        weekend.minute(offWorkMinute)
-        weekend.second(0)
-        weekend.millisecond(0)
+        weekend.subtract(1, 'd')
         this.weekend = moment.duration(weekend.diff(now))._data
       }
     },
@@ -227,7 +201,7 @@ export default {
 
       //如果本月已经过了发薪日，月份往后加一个月
       if (payOff.date() > this.config.payOffDay) {
-        payOff.month(payOff.month() + 1)
+        payOff.add(1, 'M')
       }
 
       //将日期设为发薪日
@@ -236,6 +210,8 @@ export default {
       //和现在相差天数
       this.payOff = payOff.diff(now, 'days')
     },
+
+    //设置和保存
     async setClick() {
       if (this.setStatus) {
         await this.$refs.SettingsPanel.save()
