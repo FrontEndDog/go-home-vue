@@ -24,9 +24,23 @@ export const getConfig = () => {
     offWorkTime: '18:00', //下班时间
     orderWarnTime: '', //点餐提醒时间
     workType: 0, //工作制，0双休 1大小周 2单休
+    isSaturdayWork: false, //大小周时2021年11月1号那周周六是否上班 1是上班 2是休息
     payOffDay: 10 //发薪日
   }
-  return Object.assign(defaultConfig, config)
+
+  Object.assign(defaultConfig, config)
+
+  //如果配置中是大小周，需要计算一下本周是大周还是小周
+  if (config.workType === 1) {
+    //参照时间
+    const referTime = new moment('2021-11-01 00:00:00')
+    //本周距离参照时间是单周还是双周
+    const nowWookSize = Math.floor((new moment().diff(referTime, 'days') % 14) / 7)
+    if (nowWookSize) {
+      defaultConfig.isSaturdayWork = !defaultConfig.isSaturdayWork
+    }
+  }
+  return defaultConfig
 }
 
 /**
@@ -36,13 +50,22 @@ export const getConfig = () => {
 export const getIsWorkDay = () => {
   const now = new moment()
   const date = now.format('YYYY-MM-DD') //当前日期
-  const inWorkDay = holiday.some(item => item.workDay.some(item => item === date))
-  const inRestDay = holiday.some(item => item.restDay.some(item => item === date))
+  const { workType, isSaturdayWork } = getConfig()
+  const inWorkDay = holiday[workType].some(item => item.workDay.some(item => item === date))
+  const inRestDay = holiday[workType].some(item => item.restDay.some(item => item === date))
   if (inWorkDay) {
     return true
   }
   if (inRestDay) {
     return false
   }
-  return now.format('d') > 0 && now.format('d') < 6
+  //双休  或者  大小周且周六不需要上班
+  if (workType === 0 || (workType === 1 && !isSaturdayWork)) {
+    return now.format('d') > 0 && now.format('d') < 6
+  }
+
+  //单休  或者  大小周且周六需要上班
+  if (workType === 2 || (workType === 1 && isSaturdayWork)) {
+    return now.format('d') > 0
+  }
 }

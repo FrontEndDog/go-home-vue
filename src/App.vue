@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :style="{ height: setStatus ? '600px' : '' }">
     <el-scrollbar wrap-style="overflow-x: hidden;margin-bottom:0">
       <div class="week-info">今天是星期{{ week }}，{{ chickenSoup }}</div>
 
@@ -31,6 +31,7 @@
 
         <div class="flex row">
           <div>当前时间：{{ dateTime }}</div>
+          <img class="gitee" src="https://gitee.com/static/images/logo-black.svg" @click="goGitee" />
           <el-button size="mini" type="primary" @click="setClick">{{ setStatus ? '保存' : '设置' }}</el-button>
         </div>
       </div>
@@ -94,6 +95,7 @@ export default {
     setConfig() {
       this.config = getConfig()
     },
+
     //每秒更新一次
     update() {
       this.setWorkStatus()
@@ -146,7 +148,7 @@ export default {
     //设置距离节假日天数
     setHoliday() {
       const [hour, minute] = getHourAndMinute(this.config.offWorkTime)
-      this.holidayList = holiday
+      this.holidayList = holiday[this.config.workType]
         .map(item => {
           const now = new moment()
           //节假日开始的日期
@@ -176,16 +178,21 @@ export default {
         week = 6 - week
       }
 
-      //设置日期为下一个周六
+      //如果是单休  或者  大小周且周六需要上班
+      if (this.config.workType === 2 || (this.config.workType === 1 && this.config.isSaturdayWork)) {
+        week += 1
+      }
+
+      //设置日期为下一个周末的休息日
       weekend.add(week, 'd')
 
-      //判断周六当天是否在调休或者节假日中
-      const isInHoliday = holiday.some(item => {
+      //判断休息当天是否在调休或者节假日中
+      const isInHoliday = holiday[this.config.workType].some(item => {
         const date = weekend.format('YYYY-MM-DD')
         return item.workDay.includes(date) || item.restDay.includes(date)
       })
 
-      //如果本周六在调休或者节假日中，就不展示周末倒计时
+      //如果休息当天在调休或者节假日中，就不展示周末倒计时
       if (isInHoliday) {
         this.weekend = {}
       } else {
@@ -217,6 +224,11 @@ export default {
         await this.$refs.SettingsPanel.save()
       }
       this.setStatus = !this.setStatus
+    },
+
+    //跳转开源仓库
+    goGitee() {
+      window.open('https://gitee.com/GaoWeiQiang1996/go-home-vue')
     }
   }
 }
@@ -226,7 +238,6 @@ export default {
   font-family: 'Microsoft YaHei', 'Avenir', Helvetica, Arial, sans-serif;
   color: #303133;
   width: 500px;
-  // height: 600px;
   overflow: hidden;
   .el-scrollbar {
     height: 100%;
@@ -256,6 +267,11 @@ export default {
         color: #f56c6c;
         font-weight: bold;
         font-size: 15px;
+      }
+      .gitee {
+        width: 60px;
+        margin-left: 60px;
+        cursor: pointer;
       }
       &:last-child {
         border-bottom: none;

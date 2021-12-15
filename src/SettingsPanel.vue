@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card shadow="never">
     <el-form v-bind="form">
       <div class="flex-start">
         <el-form-item label="考勤时间：" prop="onWorkTime">
@@ -26,11 +26,17 @@
       <el-form-item label="工作制：" prop="workType">
         <el-radio-group v-model="form.model.workType">
           <el-radio :label="0">双休</el-radio>
-          <el-radio :label="1" disabled>大小周</el-radio>
-          <el-radio :label="2" disabled>单休</el-radio>
+          <el-radio :label="1">大小周</el-radio>
+          <el-radio :label="2">单休</el-radio>
         </el-radio-group>
       </el-form-item>
-      <div class="tips">大小周与单休功能正在开发中</div>
+
+      <el-form-item v-if="form.model.workType === 1" label="本周六：" prop="isSaturdayWork">
+        <el-radio-group v-model="form.model.isSaturdayWork">
+          <el-radio :label="true">上班</el-radio>
+          <el-radio :label="false">休息</el-radio>
+        </el-radio-group>
+      </el-form-item>
     </el-form>
   </el-card>
 </template>
@@ -50,12 +56,14 @@ export default {
           offWorkTime: '', //下班时间
           orderWarnTime: '', //提醒点餐时间
           workType: null, //工作制，0双休 1大小周 2单休
+          isSaturdayWork: false, //大小周时本周六是否上班 1是上班 2是休息
           payOffDay: null //发薪日
         },
         rules: {
           onWorkTime: [{ required: true, message: '请输入', trigger: 'none' }],
           offWorkTime: [{ required: true, message: '请输入', trigger: 'none' }],
-          workType: [{ required: true, message: '请输入', trigger: 'none' }],
+          workType: [{ required: true, message: '请选择', trigger: 'none' }],
+          isSaturdayWork: [{ required: true, message: '请选择', trigger: 'none' }],
           payOffDay: [{ required: true, message: '请输入', trigger: 'none' }]
         }
       }
