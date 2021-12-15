@@ -54,4 +54,4 @@ npm run build
 
 ![demo3.png](https://gitee.com/GaoWeiQiang1996/go-home-vue/raw/master/src/assets/demo3.png)
 
-喜欢的话给个免费的 star 吧！！！
+### 喜欢的话给个免费的 star 吧！！！
