@@ -61,7 +61,7 @@ export default {
       onWork: {}, //上班倒计时
       offWork: {}, //下班倒计时
 
-      weekend: null, // 距离周末的天数
+      weekend: {}, // 距离周末的天数
 
       holidayList: [], //节假日倒计时，因为有多个节假日，所以是个数组
 
@@ -173,10 +173,7 @@ export default {
       const weekend = new moment({ hour, minute })
 
       //week是距离下一个周六的天数
-      let week = weekend.day()
-      if (week != 6) {
-        week = 6 - week
-      }
+      let week = 6 - weekend.day()
 
       //如果是单休  或者  大小周且周六需要上班
       if (this.config.workType === 2 || (this.config.workType === 1 && this.config.isSaturdayWork)) {
