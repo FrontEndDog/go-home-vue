@@ -22,7 +22,7 @@
         </div>
 
         <div v-for="item in holidayList" :key="item.restDay[0]" class="row">
-          距离{{ item.name }}假期还有<span> {{ item.countDown.days }} </span>天<span> {{ item.countDown.hours }} </span>小时<span> {{ item.countDown.minutes }} </span>分钟<span> {{ item.countDown.seconds }} </span>秒
+          距离{{ item.name }}还有<span> {{ item.countDown.days }} </span>天<span> {{ item.countDown.hours }} </span>小时<span> {{ item.countDown.minutes }} </span>分钟<span> {{ item.countDown.seconds }} </span>秒
         </div>
 
         <div class="row">
