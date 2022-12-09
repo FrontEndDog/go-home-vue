@@ -69,13 +69,13 @@ export default {
       }
     }
   },
-  created() {
-    this.form.model = getConfig()
+  async created() {
+    this.form.model = await getConfig()
   },
   methods: {
     async save() {
       await this.$refs.form.validate()
-      localStorage.setItem('goHomeConfig', JSON.stringify(this.form.model))
+      //   chrome.storage.local.set({ goHomeConfig: JSON.stringify(this.form.model) })
       this.$emit('updateConfig')
       if (chrome && chrome.runtime) {
         chrome.runtime.sendMessage('configChange')

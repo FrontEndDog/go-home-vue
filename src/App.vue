@@ -79,8 +79,8 @@ export default {
       timeer: null //页面定时器
     }
   },
-  created() {
-    this.setConfig()
+  async created() {
+    await this.setConfig()
     this.update()
     this.timeer = setInterval(() => {
       this.update()
@@ -92,8 +92,8 @@ export default {
   },
   methods: {
     //读取用户自定义设置
-    setConfig() {
-      this.config = getConfig()
+    async setConfig() {
+      this.config = await getConfig()
     },
 
     //每秒更新一次
@@ -125,8 +125,8 @@ export default {
     },
 
     //设置今天是否需要上班
-    setIsWorkDay() {
-      this.isWorkDay = getIsWorkDay()
+    async setIsWorkDay() {
+      this.isWorkDay = await getIsWorkDay()
     },
 
     //上班倒计时
